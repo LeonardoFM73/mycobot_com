@@ -13,7 +13,7 @@ class Sender(Node):
         
         self.declare_parameter('port', '/dev/ttyAMA0')
         self.declare_parameter('baud', 1000000)
-   
+    
         port = self.get_parameter("port").get_parameter_value().string_value
         baud = self.get_parameter("baud").get_parameter_value().integer_value
 
@@ -29,35 +29,52 @@ class Sender(Node):
 
     def callback_coord(self,msg):
         self.angles_data = [list(msg.position)]
-
-
-    def gerak_angles(self):
-        # 获取joint输入的数据，发送给机械臂
+        
         j_value = []
-        for i in self.angles_data:
-            j_value.append(float(i))
+        for i in self.angles_data[0]:
+            j_value.append(i)
             
         self.speed = 50
-        
         res = [j_value, self.speed]
 
-        try:
-            self.mc.send_angles(*res)
-        except Exception as e:
-            pass
-        self.show_j_date(j_value)
+        self.mc.send_angles(*res)
+        # self.show_j_date(j_value)
+
+        # def send_input(self,dates):
+    def show_j_date(self, date, way=""):
+        # 展示数据
+        if way == "coord":
+            for i, j in zip(date, self.coord_all):
+                j.set(str(i))
+        else:
+            for i, j in zip(date, self.cont_all):
+                j.set(str(i) + "°")
+    # def gerak_angles(self):
+    #     # 获取joint输入的数据，发送给机械臂
+    #     j_value = []
+    #     for i in self.angles_data:
+    #         j_value.append(float(i))
+            
+    #     self.speed = 50
+        
+    #     res = [j_value, self.speed]
+
+    #     try:
+    #         self.mc.send_angles(*res)
+    #     except Exception as e:
+    #         pass
+    #     self.show_j_date(j_value)
 
 def main(args=None):
     rclpy.init(args=args)
 
-    Sender = Sender()
+    Gerak = Sender()
 
-    rclpy.spin(Sender)
+    rclpy.spin(Gerak)
 
-    Sender.destroy_node()
+    Gerak.destroy_node()
     rclpy.shutdown()
 
 
 if __name__ == "__main__":
     main()
-

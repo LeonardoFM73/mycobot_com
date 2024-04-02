@@ -12,7 +12,7 @@ class Talker(Node):
 
         pub = self.create_publisher(
             msg_type=JointState,
-            topic="joint_states",
+            topic="koordinat",
             qos_profile=10
         )
         rate = self.create_rate(30)  # 30hz
@@ -37,7 +37,7 @@ class Talker(Node):
             
             rclpy.spin_once(self)
             # get real angles from server.
-            res = [float(-89),float(-141),float(120),float(-147),float(82),float(-41)]
+            res = [float(-89),float(-141),float(120),float(-147),float(82),float(41)]
 
             try:
                 if res[0] == res[1] == res[2] == 0.0:
