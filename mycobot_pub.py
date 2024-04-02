@@ -1,0 +1,42 @@
+import math
+
+import rclpy
+from pymycobot.mycobot import MyCobot
+# from pymycobot.mycobotsocket import MyCobotSocket
+from rclpy.node import Node
+from sensor_msgs.msg import JointState
+from std_msgs.msg import Header
+
+class Talker(Node):
+    def __init__(self):
+        super().__init__("real_listener")
+        
+        self.declare_parameter('port', '/dev/ttyAMA0')
+        self.declare_parameter('baud', 1000000)
+   
+        port = self.get_parameter("port").get_parameter_value().string_value
+        baud = self.get_parameter("baud").get_parameter_value().integer_value
+
+        self.get_logger().info("port:%s, baud:%d" % (port, baud))
+        self.mc = MyCobot(port,str(baud))
+    
+    def start(self):
+        pub = self.create_publisher(
+            msg_type=JointState,
+            topic="joint_states",
+            qos_profile=10
+        )
+        rate = self.create_rate(30)  # 30hz
+
+        # pub joint state
+        joint_state_send = JointState()
+        joint_state_send.header = Header()
+
+        joint_state_send.name = [
+            "joint2_to_joint1",
+            "joint3_to_joint2",
+            "joint4_to_joint3",
+            "joint5_to_joint4",
+            "joint6_to_joint5",
+            "joint6output_to_joint6",
+        ]
