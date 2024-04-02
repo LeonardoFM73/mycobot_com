@@ -19,32 +19,25 @@ class Sender(Node):
 
         self.get_logger().info("port:%s, baud:%d" % (port, baud))
         self.mc = MyCobot(port,str(baud))
-    def terima_koord(self):
-        return 0
-    def gerak_joint(self):
-        # 获取 coord 输入的数据，发送给机械臂
-        c_value = []
-        for i in self.all_c:
-            c_value.append(float(i.get()))
-        self.speed = (
-            int(float(self.get_speed.get())) if self.get_speed.get() else self.speed
+
+        self.sub = self.create_subscription(
+            msg_type=JointState,
+            topic="koordinat",
+            callback=self.callback_coord,
+            qos_profile=10
         )
-        
-        try:
-            self.mc.send_coords(c_value,self.speed, self.model)
-        except Exception as e:
-            pass
-        self.show_j_date(c_value, "coord")
+
+    def callback_coord(self,msg):
+        self.angles_data = [list(msg.position)]
+
 
     def gerak_angles(self):
         # 获取joint输入的数据，发送给机械臂
         j_value = []
-        for i in self.all_j:
-            j_value.append(float(i.get()))
+        for i in self.angles_data:
+            j_value.append(float(i))
             
-        self.speed = (
-            int(float(self.get_speed.get())) if self.get_speed.get() else self.speed
-        )
+        self.speed = 50
         
         res = [j_value, self.speed]
 
@@ -53,3 +46,18 @@ class Sender(Node):
         except Exception as e:
             pass
         self.show_j_date(j_value)
+
+def main(args=None):
+    rclpy.init(args=args)
+
+    Sender = Sender()
+
+    rclpy.spin(Sender)
+
+    Sender.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()
+
