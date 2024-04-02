@@ -20,7 +20,7 @@ class Sender(Node):
         self.get_logger().info("port:%s, baud:%d" % (port, baud))
         self.mc = MyCobot(port,str(baud))
     def terima_koord(self):
-
+        return 0
     def gerak_joint(self):
         # 获取 coord 输入的数据，发送给机械臂
         c_value = []

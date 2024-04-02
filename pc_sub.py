@@ -1,37 +1,39 @@
+import math
 import rclpy
 from rclpy.node import Node
+from sensor_msgs.msg import JointState
 
-from std_msgs.msg import String
 
-
-class MinimalSubscriber(Node):
-
+class Listener(Node):
     def __init__(self):
-        super().__init__('minimal_subscriber')
-        self.subscription = self.create_subscription(
-            String,
-            'topic1',
-            self.listener_callback,
-            10)
-        self.subscription  # prevent unused variable warning
+        super().__init__("real_listener_1")
 
-    def listener_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg.data)
+        self.sub = self.create_subscription(
+            msg_type=JointState,
+            topic="joint_states",
+            callback=self.callback,
+            qos_profile=10
+        )
+
+    def callback(self, msg):
+        angles_data = [list(msg.position)]
+        self.get_logger().info(
+            '\n\t angles: {}\n'.format(
+                angles_data
+            )
+        )
 
 
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_subscriber = MinimalSubscriber()
+    listener = Listener()
 
-    rclpy.spin(minimal_subscriber)
+    rclpy.spin(listener)
 
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
-    minimal_subscriber.destroy_node()
+    listener.destroy_node()
     rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
