@@ -10,13 +10,13 @@ class Listener(Node):
 
         self.sub = self.create_subscription(
             msg_type=JointState,
-            topic="joint_states",
+            topic="koordinat",
             callback=self.callback,
             qos_profile=10
         )
 
     def callback(self, msg):
-        angles_data = [list(msg.position)]
+        angles_data = list(msg.position)
         self.get_logger().info(
             '\n\t angles: {}\n'.format(
                 angles_data

@@ -8,7 +8,7 @@ from std_msgs.msg import Header
 class Talker(Node):
 
     def __init__(self):
-        super().__init__("real_listener_1")
+        super().__init__("Publish_coord")
 
         pub = self.create_publisher(
             msg_type=JointState,
@@ -37,7 +37,7 @@ class Talker(Node):
             
             rclpy.spin_once(self)
             # get real angles from server.
-            res = [float(-89),float(-141),float(120),float(-147),float(82),float(41)]
+            res = [float(-78.9),float(-188.5),float(283.2),float(-87.1),float(1.21),float(179.62)]
 
             try:
                 if res[0] == res[1] == res[2] == 0.0:

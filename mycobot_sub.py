@@ -28,7 +28,7 @@ class Sender(Node):
         )
 
     def callback_coord(self,msg):
-        self.angles_data = [list(msg.position)]
+        self.angles_data = list(msg.position)
         
         j_value = []
         for i in self.angles_data[0]:
@@ -38,9 +38,7 @@ class Sender(Node):
         res = [j_value, self.speed]
 
         self.mc.send_angles(*res)
-        # self.show_j_date(j_value)
 
-        # def send_input(self,dates):
     def show_j_date(self, date, way=""):
         # 展示数据
         if way == "coord":
@@ -49,21 +47,7 @@ class Sender(Node):
         else:
             for i, j in zip(date, self.cont_all):
                 j.set(str(i) + "°")
-    # def gerak_angles(self):
-    #     # 获取joint输入的数据，发送给机械臂
-    #     j_value = []
-    #     for i in self.angles_data:
-    #         j_value.append(float(i))
-            
-    #     self.speed = 50
-        
-    #     res = [j_value, self.speed]
 
-    #     try:
-    #         self.mc.send_angles(*res)
-    #     except Exception as e:
-    #         pass
-    #     self.show_j_date(j_value)
 
 def main(args=None):
     rclpy.init(args=args)
