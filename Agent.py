@@ -100,7 +100,7 @@ def main(args=None):
                     rclpy.spin_once(sender)
                     print(cond)
                     # time.sleep(5) # input dari sensor
-                time.sleep(3)
+                time.sleep(1)
                 res1 = [float(37.1),float(-161.3),float(224.0),float(-82.62),float(0.67),float(-142.35)]
                 sender.send_robot(res1)
                 
