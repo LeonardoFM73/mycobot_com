@@ -75,7 +75,7 @@ class Sender(Node):
 
 
 def main(args=None):
-    global cond  # Gunakan variabel global co
+    global cond  # Gunakan variabel global con
     rclpy.init(args=args)
     sender = Sender()
 
@@ -98,8 +98,9 @@ def main(args=None):
                 sender.send_command(menu_choice)
                 while not cond:
                     rclpy.spin_once(sender)
-                    # print(cond)
+                    print(cond)
                     # time.sleep(5) # input dari sensor
+                time.sleep(3)
                 res1 = [float(37.1),float(-161.3),float(224.0),float(-82.62),float(0.67),float(-142.35)]
                 sender.send_robot(res1)
                 
