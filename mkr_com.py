@@ -28,24 +28,37 @@ class Listener(Node):
             callback=self.callback_menu,
             qos_profile=10
         )
-        
-
-        # Membuat nama file CSV berdasarkan waktu sekarang
+        self.sub_gripper = self.create_subscription(
+            msg_type=String,
+            topic="Gripper",
+            callback=self.callback_gripper,
+            qos_profile=10
+        )
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         self.csv_file_name = f"Sensor/sensor_data_{current_time}.csv"
 
         # Membuka file CSV untuk ditulis
         self.csv_file = open(self.csv_file_name, 'w', newline='')
-        self.csv_writer = csv.writer(self.csv_file)
         self.menu_choice = 0
+        self.condition_gripper = 0
 
         self.sensor_buffer = []
         self.another_buffer = []
 
+    def callback_gripper(self, msg):
+        self.condition_gripper = msg.data
+
     def callback_menu(self, msg):
         self.menu_choice = msg.data
-        self.get_logger().info(f'Received menu choice: {self.menu_choice}')
+        if self.menu_choice == '3':
+            # Membuat nama file CSV berdasarkan waktu sekarang
+            # Membuka file CSV untuk ditulis
+            self.csv_file = open(self.csv_file_name, 'w', newline='')
+            self.csv_writer = csv.writer(self.csv_file)
 
+            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            self.csv_file_name = f"Sensor/sensor_data_{current_time}.csv"
+        self.get_logger().info(f'Received menu choice: {self.menu_choice}')
             
 
     def callback_sensor(self, msg):
@@ -84,8 +97,8 @@ class Listener(Node):
         # Lakukan pemrosesan data dari kedua buffer sesuai dengan kebutuhan
         if self.another_buffer and self.sensor_buffer:
             combined_data = self.another_buffer.pop(0) + self.sensor_buffer.pop(0) # Contoh penggabungan data
-        if self.menu_choice == '3':
-            self.csv_writer.writerow(combined_data)
+            if self.menu_choice == '3' and self.condition_gripper != '0':
+                self.csv_writer.writerow(combined_data)
         
     def close(self):
         # Menutup file CSV
