@@ -55,6 +55,7 @@ class Talker(Node):
                 # publish angles.
                 joint_state_send.header.stamp = self.get_clock().now().to_msg()
                 joint_state_send.position = radians_list
+                # joint_state_send.velocity = 50
                 pub.publish(joint_state_send)
                 rate.sleep()
             except Exception as e:

@@ -13,11 +13,6 @@ class Sender(Node):
             callback=self.callback,
             qos_profile=10
         )
-        pub = self.create_publisher(
-            msg_type=String,
-            topic="servo_value",
-            qos_profile=10
-        )
         rate = self.create_rate(30)  # 30hz
 
         while rclpy.ok():
