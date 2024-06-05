@@ -111,6 +111,7 @@ class Sender(Node):
         
         # Display color image
         cv2.imshow('BGR Image', bgr_frame)
+        cv2.imshow('BGR Image', bgr_frame)
 
         cv2.waitKey(1)  # Wait for a key press to update the display
 
