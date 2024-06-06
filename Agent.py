@@ -463,7 +463,7 @@ def main(args=None):
 
                 # Terapkan rotasi pada sumbu z
                 posisi_rotasi_z = rotasi_z.dot(posisi_rotasi_x)
-                posisi_akhir = posisi_rotasi_z + np.array([40, 201 - posisi_rotasi_z[0]*0.05, 288 + posisi_rotasi_z[0]*0.095]) # 30, 200 , 280
+                posisi_akhir = posisi_rotasi_z + np.array([40, 201 - posisi_rotasi_z[0]*0.05, 255 + posisi_rotasi_z[0]*0.095]) # 30, 200 , 280
                 posisi_akhir_b = [round(elem, 1) for elem in posisi_akhir ]
 
                 res = [float(posisi_akhir_b[0]),float(posisi_akhir_b[1]),float(posisi_akhir_b[2]-30),float(-80.10),float(0),float(-161.00)] #y+15 z+20
@@ -522,7 +522,8 @@ def main(args=None):
 
                 # Terapkan rotasi pada sumbu z
                 posisi_rotasi_z = rotasi_z.dot(posisi_rotasi_x)
-                posisi_akhir = posisi_rotasi_z + np.array([float(40), float(212 - posisi_rotasi_z[0]*0.0675), float(292 + posisi_rotasi_z[0]*0.125)]) # 30, 200 , 280
+                print(posisi_rotasi_z)
+                posisi_akhir = posisi_rotasi_z + np.array([float(35), float(210 - posisi_rotasi_z[0]*0.0675), float(259 + abs(posisi_rotasi_z[0]*0.225))]) # 30, 200 , 255
                 posisi_akhir_b = [round(elem, 1) for elem in posisi_akhir ]
 
                 res = [float(posisi_akhir_b[0]),float(posisi_akhir_b[1]),float(posisi_akhir_b[2]-30),float(-80.10),float(0),float(-161.00)] #y+15 z+20
@@ -596,7 +597,8 @@ def main(args=None):
 
                 # Terapkan rotasi pada sumbu z
                 posisi_rotasi_z = rotasi_z.dot(posisi_rotasi_x)
-                posisi_akhir = posisi_rotasi_z + np.array([float(40), float(212 - posisi_rotasi_z[0]*0.0675), float(270 + posisi_rotasi_z[0]*0.125)]) # 30, 200 , 280
+                print(posisi_rotasi_z)
+                posisi_akhir = posisi_rotasi_z + np.array([float(35), float(210 - posisi_rotasi_z[0]*0.0675), float(257 + abs(posisi_rotasi_z[0]*0.225))]) # 30, 200 , 255
                 posisi_akhir_b = [round(elem, 1) for elem in posisi_akhir ]
 
                 res = [float(posisi_akhir_b[0]),float(posisi_akhir_b[1]),float(posisi_akhir_b[2]-30),float(-80.10),float(0),float(-161.00)] #y+15 z+20
