@@ -9,11 +9,11 @@ from std_msgs.msg import Header
 
 class Sender(Node):
     def __init__(self):
-        super().__init__("real_listener")
+        super().__init__("Mycobot")
         
         self.declare_parameter('port', '/dev/ttyAMA0')
         self.declare_parameter('baud', 1000000)
-    
+   
         port = self.get_parameter("port").get_parameter_value().string_value
         baud = self.get_parameter("baud").get_parameter_value().integer_value
 
@@ -26,38 +26,78 @@ class Sender(Node):
             callback=self.callback_coord,
             qos_profile=10
         )
+        self.pub = self.create_publisher(
+            msg_type=JointState,
+            topic="joint_states",
+            qos_profile=10
+        )
+        self.timer = self.create_timer(0.1,self.publish_joint_states)
 
-    def callback_coord(self,msg):
-        self.angles_data = list(msg.position)
-        
-        j_value = []
-        for i in self.angles_data[0]:
-            j_value.append(i)
-            
+
+        # pub joint state
+        self.joint_state_send = JointState()
+        self.joint_state_send.header = Header()
+
+        self.joint_state_send.name = [
+            "joint2_to_joint1",
+            "joint3_to_joint2",
+            "joint4_to_joint3",
+            "joint5_to_joint4",
+            "joint6_to_joint5",
+            "joint6output_to_joint6",
+        ]
+
+        self.joint_state_send.velocity = [0.0, ]
+        self.joint_state_send.effort = []
         self.speed = 50
-        res = [j_value, self.speed]
+    
+    def publish_joint_states(self):
+        res1 = self.mc.get_coords()
+        self.get_logger().info("res: {}".format(res1))
+        # self.get_logger().info("res: {}".format(self.speed))
 
-        self.mc.send_angles(*res)
+        # publish angles.
+        self.joint_state_send.header.stamp = self.get_clock().now().to_msg()
+        self.joint_state_send.position = res1
+        self.pub.publish(self.joint_state_send)
 
-    def show_j_date(self, date, way=""):
-        # 展示数据
-        if way == "coord":
-            for i, j in zip(date, self.coord_all):
-                j.set(str(i))
-        else:
-            for i, j in zip(date, self.cont_all):
-                j.set(str(i) + "°")
+    def release_all_servos(self):
+        self.mc.release_all_servos()
+    
+    def callback_coord(self,msg):
+        self.coord_data = list(msg.position)
+        self.velocity = list(msg.velocity)
+        
+        j_value = self.coord_data
+        print(self.coord_data)
+        # for i in self.coord_data[0]:
+        #     j_value.append(i)
+            
+        self.speed = self.velocity[0]
+     
+
+        self.mc.sync_send_coords(j_value, int(self.speed),1
+                                 )
+            
+        
+        # self.mc.sync_send_angles(j_value, self.speed)
+        # self.show_j_date(j_value)
+
+        # def send_input(self,dates
 
 
 def main(args=None):
     rclpy.init(args=args)
 
     Gerak = Sender()
+    
 
-    rclpy.spin(Gerak)
-
-    Gerak.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(Gerak)
+    except KeyboardInterrupt:
+        Gerak.destroy_node()
+        rclpy.shutdown()
+        Gerak.release_all_servos()
 
 
 if __name__ == "__main__":
